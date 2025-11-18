@@ -26,7 +26,7 @@ zebra-label-printer
 To set up the project, clone the repository and install the required dependencies:
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/axelclaudiom/zebra-label-printer.git
 cd zebra-label-printer
 pip install -r requirements.txt
 ```

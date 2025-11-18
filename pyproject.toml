@@ -2,7 +2,7 @@
 name = "zebra-label-printer"
 version = "0.1.0"
 description = "A Python project to connect to Zebra printers and send labels for printing."
-authors = ["Your Name <youremail@example.com>"]
+authors = ["Axel <axel@axlm.tech>"]
 license = "MIT"
 
 [tool.poetry.dependencies]
