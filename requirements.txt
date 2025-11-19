@@ -1,3 +1,4 @@
 # Dependencias mínimas para el proyecto
-requests
-pywin32
+requests>=2.32.5
+# Opcional: sólo si usas envío a la cola de impresión de Windows (winspool)
+pywin32>=305
