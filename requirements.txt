@@ -1,3 +1,3 @@
+# Dependencias mínimas para el proyecto
 requests
-pyusb
-python-zebra
+pywin32

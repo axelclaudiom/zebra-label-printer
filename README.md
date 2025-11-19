@@ -1,58 +1,46 @@
-# Zebra Label Printer
+# zebra-label-printer
 
-This project provides a Python interface for connecting to Zebra printers and sending ZPL (Zebra Programming Language) labels for printing. It includes functionality for fetching article data from an API, generating ZPL labels, and managing the connection to the printer.
+Script para obtener datos de artículos y generar etiquetas ZPL listas para imprimir en impresoras Zebra (WinSpool).
 
-## Project Structure
+## Requisitos
+- Python 3.8+
+- Dependencias: instalar desde requirements.txt
 
-```
-zebra-label-printer
-├── src
-│   ├── printer
-│   │   ├── __init__.py
-│   │   ├── connector.py
-│   │   └── usb_socket.py
-│   ├── request.py
-│   └── send_labels.py
-├── tests
-│   └── test_send_labels.py
-├── requirements.txt
-├── pyproject.toml
-├── .gitignore
-└── README.md
+Instalación:
+```powershell
+python -m pip install -r requirements.txt
 ```
 
-## Installation
+## Configuración de impresora
+La impresora se define en la variable `PRINTER` dentro de `send_labelss.py` o mediante la variable de entorno `ZEBRA_PRINTER`.
 
-To set up the project, clone the repository and install the required dependencies:
-
-```bash
-git clone https://github.com/axelclaudiom/zebra-label-printer.git
-cd zebra-label-printer
-pip install -r requirements.txt
+Ejemplos de valores:
+- Directo en el script: `PRINTER = "winspool://Mi Impresora"`
+- Variable de entorno (PowerShell):
+```powershell
+$env:ZEBRA_PRINTER = "winspool://Mi Impresora"
 ```
 
-## Usage
+## Uso
+Ejecutar desde la carpeta del proyecto:
 
-1. **Fetch Data and Generate Labels**: Use the `send_labels.py` script to fetch article data and generate ZPL labels. You can specify the article code and the number of labels to print.
+PowerShell / CMD:
+```powershell
+python .\send_labelss.py -c BOR0003 -n 2
+```
 
-   Example command:
-   ```bash
-   python src/send_labels.py -c BOR0003 -n 5
-   ```
+Donde:
+- `-c, --codigo` COD_STA11 a buscar (requerido)
+- `-n, --count` número de etiquetas a generar (por defecto 1)
 
-2. **Connect to the Printer**: The `ZebraPrinterConnector` class in `connector.py` manages the connection to the printer. Ensure your printer is connected via USB and recognized by your system.
+## Nota sobre request.py
+El módulo `request.py` debe estar en la misma carpeta y exponer:
+- `fetch_data(codigo)` -> dict con los datos del artículo
+- `generate_zpl(item)` -> string con ZPL listo para enviar
 
-3. **Testing**: Unit tests are provided in the `tests` directory. Run the tests to ensure everything is functioning correctly.
-
-   Example command:
-   ```bash
-   pytest tests/test_send_labels.py
-   ```
-
-## Contributing
-
-Contributions are welcome! Please open an issue or submit a pull request for any enhancements or bug fixes.
-
-## License
-
-This project is licensed under the MIT License. See the LICENSE file for details.
+## Solución de problemas
+- Si falla por falta de `requests` o `pywin32`:
+```powershell
+python -m pip install requests pywin32
+```
+- Error relacionado a pywin32 al usar winspool: instalar `pywin32` y reiniciar la sesión de Python/terminal.
