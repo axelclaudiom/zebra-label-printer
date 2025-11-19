@@ -58,17 +58,6 @@ def generate_zpl(item: dict) -> str:
 
     return zpl
 
-def send_labels_to_printer(zpl_labels):
-    """Send generated ZPL labels to the Zebra printer."""
-    printer = ZebraPrinterConnector()
-    try:
-        printer.connect()
-        printer.send_data(zpl_labels)
-    except Exception as e:
-        print(f'Error sending labels to printer: {e}', file=sys.stderr)
-    finally:
-        printer.disconnect()
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Fetch article and generate ZPL labels')
     parser.add_argument('-c', '--codigo', default=codigo1, help='COD_STA11 to search')
@@ -86,4 +75,3 @@ if __name__ == '__main__':
         sys.exit(1)
 
     labels = ''.join(generate_zpl(item) for _ in range(max(1, args.count)))
-    send_labels_to_printer(labels)
