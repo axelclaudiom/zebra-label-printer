@@ -7,7 +7,7 @@ from request import fetch_data, generate_zpl
 # Examples:
 #   ZEBRA_PRINTER="winspool://Mi Impresora"  (env)
 #   PRINTER = "Mi Impresora"                 (directly edit below)
-PRINTER = "ZDesigner_GC420t"
+PRINTER = "winspool://ZDesigner_GC420t"
 
 def send_winspool(printer_name, data):
     try:
