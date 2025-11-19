@@ -55,7 +55,7 @@ def generate_zpl(item: dict) -> str:
         '^CI28\n'
         '^XZ'
     ).format(barcode=barcode, sku=sku, desc=desc)
-
+    print(zpl)
     return zpl
 
 if __name__ == '__main__':
