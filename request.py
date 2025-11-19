@@ -46,7 +46,7 @@ def generate_zpl(item: dict) -> str:
 
     zpl = (
         '^XA^CI28\n'
-        '^LH-110,0\n'
+        '^LH-80,0\n'
         '^FO65,18^BY2,,0^BCN,54,N,N^FD{barcode}^FS\n'
         '^FO145,80^A0N,20,25^FH^FD{barcode}^FS\n'
         '^FO146,80^A0N,20,25^FH^FD{barcode}^FS\n'
