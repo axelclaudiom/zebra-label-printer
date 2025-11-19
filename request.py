@@ -1,7 +1,6 @@
 import argparse
 import sys
 import requests
-from printer.connector import ZebraPrinterConnector
 
 codigo1 = "BOR0003"
 
@@ -29,7 +28,10 @@ def _get_field(item, *keys):
     return None
 
 def generate_zpl(item: dict) -> str:
-    """Generate ZPL (Code128) label from an item dict."""
+    """Generate ZPL (Code128) label from an item dict.
+
+    Returns a complete ZPL document string ready to send to a Zebra printer.
+    """
     if not item:
         return ''
 
