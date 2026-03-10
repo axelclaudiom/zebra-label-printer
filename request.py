@@ -112,6 +112,23 @@ def generate_zpl(item: dict, price=None) -> str:
         '^XA^CI28\n'
         '^LH-80,0\n'
         '^FO22,18^A0N,20,25^FB380,2,0,L^FH^FD{desc}^FS\n'
+        '^FO65,68^BY2,,0^BCN,54,N,N^FD{barcode}^FS\n'
+        '^FO145,132^A0N,20,25^FH^FD{barcode}^FS\n'
+        '^FO146,132^A0N,20,25^FH^FD{barcode}^FS\n'
+        '^FO22,180^A0N,20,20^FH^FDTarjeta:^FS\n'
+        '^FO22,202^A0N,24,24^FH^FD${price_text}^FS\n'
+        '^FO220,180^A0N,20,20^FH^FDEfectivo:^FS\n'
+        '^FO220,202^A0N,24,24^FH^FD${discount_text}^FS\n'
+        '^CI28\n'
+        '^XZ'
+    ).format(barcode=barcode, sku=sku, desc=desc, price_text=price_text, discount_text=discount_text)
+
+    """
+    Backup version de etiqueta funcional
+        zpl = (
+        '^XA^CI28\n'
+        '^LH-80,0\n'
+        '^FO22,18^A0N,20,25^FB380,2,0,L^FH^FD{desc}^FS\n'
         '^FO23,18^A0N,20,25^FB380,2,0,L^FH^FD{desc}^FS\n'
         '^FO65,68^BY2,,0^BCN,54,N,N^FD{barcode}^FS\n'
         '^FO145,132^A0N,20,25^FH^FD{barcode}^FS\n'
@@ -122,6 +139,7 @@ def generate_zpl(item: dict, price=None) -> str:
         '^CI28\n'
         '^XZ'
     ).format(barcode=barcode, sku=sku, desc=desc, price_text=price_text, discount_text=discount_text)
+    """
 
     """
     # 50x25 label
