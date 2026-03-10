@@ -76,6 +76,15 @@ def _format_price(value):
     except (TypeError, ValueError):
         return str(value)
 
+
+def _apply_discount(value, discount_pct=20):
+    """Return discounted numeric value, or None if value is not numeric."""
+    try:
+        numeric = float(str(value).replace(',', '.'))
+    except (TypeError, ValueError):
+        return None
+    return numeric * (1 - (discount_pct / 100.0))
+
 def generate_zpl(item: dict, price=None) -> str:
     """Generate ZPL (Code128) label from an item dict.
 
@@ -93,6 +102,8 @@ def generate_zpl(item: dict, price=None) -> str:
     sku = str(sku)
     barcode = str(barcode)
     price_text = _format_price(price)
+    discount_price = _apply_discount(price, 20)
+    discount_text = _format_price(discount_price)
 
     zpl = (
         '^XA^CI28\n'
@@ -104,9 +115,10 @@ def generate_zpl(item: dict, price=None) -> str:
         '^FO146,132^A0N,20,25^FH^FD{barcode}^FS\n'
         '^FO22,170^A0N,18,18^FH^FDSKU: {sku}^FS\n'
         '^FO22,192^A0N,24,24^FH^FDPRECIO: ${price_text}^FS\n'
+        '^FO220,192^A0N,24,24^FH^FDDTO20: ${discount_text}^FS\n'
         '^CI28\n'
         '^XZ'
-    ).format(barcode=barcode, sku=sku, desc=desc, price_text=price_text)
+    ).format(barcode=barcode, sku=sku, desc=desc, price_text=price_text, discount_text=discount_text)
 
     """
     # 50x25 label
