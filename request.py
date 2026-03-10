@@ -21,7 +21,7 @@ def fetch_price_for_list(article_id, list_number=2):
         return None
 
     url = f'https://apitango.venialacocina.com.ar/api/precios/{article_id}'
-    resp = requests.get(url)
+    resp = requests.get(url, timeout=20)
     resp.raise_for_status()
     data = resp.json() or {}
 
@@ -36,18 +36,12 @@ def fetch_price_for_list(article_id, list_number=2):
         if not isinstance(row, dict):
             continue
         nro = row.get('NRO_DE_LIS')
-        try:
-            if int(nro) != int(list_number):
-                continue
-        except (TypeError, ValueError):
+        if str(nro).strip() != str(list_number).strip():
             continue
 
-        return (
-            row.get('PRECIO')
-            or row.get('PRECIO_VTA')
-            or row.get('PRECIO_VENTA')
-            or row.get('IMPORTE')
-        )
+        for key in ('PRECIO', 'PRECIO_VTA', 'PRECIO_VENTA', 'IMPORTE'):
+            if key in row and row.get(key) is not None and str(row.get(key)).strip() != '':
+                return row.get(key)
 
     return None
 
@@ -70,7 +64,7 @@ def _format_price(value):
     if value is None or value == '':
         return 'N/D'
     try:
-        return f"{float(value):.2f}"
+        return f"{float(str(value).replace(',', '.')):.2f}"
     except (TypeError, ValueError):
         return str(value)
 
