@@ -45,6 +45,14 @@ def fetch_price_for_list(article_id, list_number=2):
 
     return None
 
+
+def fetch_price_for_item(item, list_number=2):
+    """Resolve article id from item and fetch list price."""
+    if not item:
+        return None
+    article_id = _get_field(item, 'id', 'ID', 'ID_STA11', 'id_sta11')
+    return fetch_price_for_list(article_id, list_number)
+
 def _get_field(item, *keys):
     """Return first existing non-empty value from item for provided keys (case-insensitive)."""
     if not item:
@@ -133,11 +141,10 @@ if __name__ == '__main__':
         print(f'No item found for codigo: {args.codigo}', file=sys.stderr)
         sys.exit(1)
 
-    article_id = _get_field(item, 'id', 'ID', 'ID_STA11', 'id_sta11')
     try:
-        price = fetch_price_for_list(article_id, 2)
+        price = fetch_price_for_item(item, 2)
     except Exception as e:
-        print(f'Warning fetching price for article id {article_id}: {e}', file=sys.stderr)
+        print(f'Warning fetching price for codigo {args.codigo}: {e}', file=sys.stderr)
         price = None
 
     labels = ''.join(generate_zpl(item, price=price) for _ in range(max(1, args.count)))

@@ -1,7 +1,7 @@
 import argparse
 import os
 import sys
-from request import fetch_data, generate_zpl
+from request import fetch_data, fetch_price_for_item, generate_zpl
 
 # Printer can be set here or via environment variable ZEBRA_PRINTER.
 # Examples:
@@ -91,9 +91,15 @@ def main():
         print(f"No item found for codigo: {args.codigo}", file=sys.stderr)
         sys.exit(6)
 
+    try:
+        price = fetch_price_for_item(item, 2)
+    except Exception as e:
+        print(f"Warning fetching price for {args.codigo}: {e}", file=sys.stderr)
+        price = None
+
     # build combined ZPL with `count` labels (default 1 if not provided)
     count = args.count if isinstance(args.count, int) and args.count > 0 else 1
-    zpls = ''.join(generate_zpl(item) for _ in range(count))
+    zpls = ''.join(generate_zpl(item, price=price) for _ in range(count))
 
     kind = parse_printer(printer_uri)
     try:

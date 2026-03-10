@@ -1,4 +1,4 @@
-from request import fetch_data, generate_zpl
+from request import fetch_data, fetch_price_for_item, generate_zpl
 from pathlib import Path
 import sys
 from send_labelss import send_from_file
@@ -32,8 +32,13 @@ def build_labels_from_file(path):
         if not item:
             print(f"Warning: no se encontró {codigo}", file=sys.stderr)
             continue
+        try:
+            price = fetch_price_for_item(item, 2)
+        except Exception as e:
+            print(f"Warning: no se pudo obtener precio para {codigo}: {e}", file=sys.stderr)
+            price = None
         for _ in range(cantidad):
-            out.append(generate_zpl(item))
+            out.append(generate_zpl(item, price=price))
     return "".join(out)
 
 if __name__ == "__main__":
