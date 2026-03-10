@@ -114,8 +114,8 @@ def generate_zpl(item: dict, price=None) -> str:
         '^FO145,132^A0N,20,25^FH^FD{barcode}^FS\n'
         '^FO146,132^A0N,20,25^FH^FD{barcode}^FS\n'
         '^FO22,170^A0N,18,18^FH^FDSKU: {sku}^FS\n'
-        '^FO22,192^A0N,24,24^FH^FDPRECIO: ${price_text}^FS\n'
-        '^FO220,192^A0N,24,24^FH^FDDTO20: ${discount_text}^FS\n'
+        '^FO22,192^A0N,24,24^FH^FDEfectivo: ${price_text}^FS\n'
+        '^FO220,192^A0N,24,24^FH^FDTarjeta: ${discount_text}^FS\n'
         '^CI28\n'
         '^XZ'
     ).format(barcode=barcode, sku=sku, desc=desc, price_text=price_text, discount_text=discount_text)
