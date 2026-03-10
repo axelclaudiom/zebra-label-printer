@@ -14,6 +14,43 @@ def fetch_data(codigo):
         return data[0] if data else {}
     return data or {}
 
+
+def fetch_price_for_list(article_id, list_number=2):
+    """Fetch price from GVA17 where NRO_DE_LIS matches list_number."""
+    if not article_id:
+        return None
+
+    url = f'https://apitango.venialacocina.com.ar/api/precios/{article_id}'
+    resp = requests.get(url)
+    resp.raise_for_status()
+    data = resp.json() or {}
+
+    value = data.get('value') if isinstance(data, dict) else {}
+    value = value or {}
+    gva17 = value.get('GVA17') if isinstance(value, dict) else []
+
+    if not isinstance(gva17, list):
+        return None
+
+    for row in gva17:
+        if not isinstance(row, dict):
+            continue
+        nro = row.get('NRO_DE_LIS')
+        try:
+            if int(nro) != int(list_number):
+                continue
+        except (TypeError, ValueError):
+            continue
+
+        return (
+            row.get('PRECIO')
+            or row.get('PRECIO_VTA')
+            or row.get('PRECIO_VENTA')
+            or row.get('IMPORTE')
+        )
+
+    return None
+
 def _get_field(item, *keys):
     """Return first existing non-empty value from item for provided keys (case-insensitive)."""
     if not item:
@@ -27,7 +64,17 @@ def _get_field(item, *keys):
             return v
     return None
 
-def generate_zpl(item: dict) -> str:
+
+def _format_price(value):
+    """Format a numeric price value for labels."""
+    if value is None or value == '':
+        return 'N/D'
+    try:
+        return f"{float(value):.2f}"
+    except (TypeError, ValueError):
+        return str(value)
+
+def generate_zpl(item: dict, price=None) -> str:
     """Generate ZPL (Code128) label from an item dict.
 
     Returns a complete ZPL document string ready to send to a Zebra printer.
@@ -43,6 +90,7 @@ def generate_zpl(item: dict) -> str:
     desc = ' '.join(str(desc).splitlines())
     sku = str(sku)
     barcode = str(barcode)
+    price_text = _format_price(price)
 
     zpl = (
         '^XA^CI28\n'
@@ -53,9 +101,10 @@ def generate_zpl(item: dict) -> str:
         '^FO145,132^A0N,20,25^FH^FD{barcode}^FS\n'
         '^FO146,132^A0N,20,25^FH^FD{barcode}^FS\n'
         '^FO22,170^A0N,18,18^FH^FDSKU: {sku}^FS\n'
+        '^FO22,192^A0N,24,24^FH^FDPRECIO: ${price_text}^FS\n'
         '^CI28\n'
         '^XZ'
-    ).format(barcode=barcode, sku=sku, desc=desc)
+    ).format(barcode=barcode, sku=sku, desc=desc, price_text=price_text)
 
     """
     # 50x25 label
@@ -90,4 +139,11 @@ if __name__ == '__main__':
         print(f'No item found for codigo: {args.codigo}', file=sys.stderr)
         sys.exit(1)
 
-    labels = ''.join(generate_zpl(item) for _ in range(max(1, args.count)))
+    article_id = _get_field(item, 'id', 'ID', 'ID_STA11', 'id_sta11')
+    try:
+        price = fetch_price_for_list(article_id, 2)
+    except Exception as e:
+        print(f'Warning fetching price for article id {article_id}: {e}', file=sys.stderr)
+        price = None
+
+    labels = ''.join(generate_zpl(item, price=price) for _ in range(max(1, args.count)))
