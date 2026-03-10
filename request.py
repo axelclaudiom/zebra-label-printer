@@ -1,5 +1,6 @@
 import argparse
 import sys
+from decimal import Decimal, InvalidOperation, ROUND_DOWN
 import requests
 
 codigo1 = "BOR0003"
@@ -72,18 +73,20 @@ def _format_price(value):
     if value is None or value == '':
         return 'N/D'
     try:
-        return f"{float(str(value).replace(',', '.')):.2f}"
-    except (TypeError, ValueError):
+        numeric = Decimal(str(value).replace(',', '.'))
+        return str(numeric.to_integral_value(rounding=ROUND_DOWN))
+    except (TypeError, ValueError, InvalidOperation):
         return str(value)
 
 
 def _apply_discount(value, discount_pct=20):
     """Return discounted numeric value, or None if value is not numeric."""
     try:
-        numeric = float(str(value).replace(',', '.'))
-    except (TypeError, ValueError):
+        numeric = Decimal(str(value).replace(',', '.'))
+    except (TypeError, ValueError, InvalidOperation):
         return None
-    return numeric * (1 - (discount_pct / 100.0))
+    multiplier = Decimal('1') - (Decimal(str(discount_pct)) / Decimal('100'))
+    return numeric * multiplier
 
 def generate_zpl(item: dict, price=None) -> str:
     """Generate ZPL (Code128) label from an item dict.
