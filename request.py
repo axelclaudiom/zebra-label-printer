@@ -111,7 +111,7 @@ def generate_zpl(item: dict, price=None) -> str:
     zpl = (
         '^XA^CI28\n'
         '^MD20\n'
-        '^PR3\n'
+        '^PR2\n'
         '^LH-80,0\n'
         '^FO22,18^A0N,25,25^FB380,2,0,L^FH^FD{desc}^FS\n'
         '^FO65,68^BY2,,0^BCN,54,N,N^FD{barcode}^FS\n'
