@@ -47,6 +47,21 @@ def generate_zpl(item: dict) -> str:
     zpl = (
         '^XA^CI28\n'
         '^LH-80,0\n'
+        '^FO22,18^A0N,20,25^FB380,2,0,L^FH^FD{desc}^FS\n'
+        '^FO23,18^A0N,20,25^FB380,2,0,L^FH^FD{desc}^FS\n'
+        '^FO65,68^BY2,,0^BCN,54,N,N^FD{barcode}^FS\n'
+        '^FO145,132^A0N,20,25^FH^FD{barcode}^FS\n'
+        '^FO146,132^A0N,20,25^FH^FD{barcode}^FS\n'
+        '^FO22,170^A0N,18,18^FH^FDSKU: {sku}^FS\n'
+        '^CI28\n'
+        '^XZ'
+    ).format(barcode=barcode, sku=sku, desc=desc)
+
+    """
+    # 50x25 label
+    zpl = (
+        '^XA^CI28\n'
+        '^LH-80,0\n'
         '^FO65,18^BY2,,0^BCN,54,N,N^FD{barcode}^FS\n'
         '^FO145,80^A0N,20,25^FH^FD{barcode}^FS\n'
         '^FO146,80^A0N,20,25^FH^FD{barcode}^FS\n'
@@ -55,6 +70,7 @@ def generate_zpl(item: dict) -> str:
         '^CI28\n'
         '^XZ'
     ).format(barcode=barcode, sku=sku, desc=desc)
+    """
     print(zpl)
     return zpl
 
