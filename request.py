@@ -113,7 +113,7 @@ def generate_zpl(item: dict, price=None) -> str:
         '^MD22\n'
         '^PR3\n'
         '^LH-80,0\n'
-        '^FO22,18^A0N,25,25^FB380,2,0,L^FH^FD{desc}^FS\n'
+        '^FO22,18^A0N,25,25^FB380,2,0,C^FH^FD{desc}^FS\n'
         '^FO65,68^BY2,,0^BCN,54,N,N^FD{barcode}^FS\n'
         '^FO145,132^A0N,20,25^FH^FD{barcode}^FS\n'
         '^FO146,132^A0N,20,25^FH^FD{barcode}^FS\n'
